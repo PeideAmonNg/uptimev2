@@ -1,6 +1,6 @@
 {
   "name": "uptime",
-  "version": 14,
+  "version": 2,
   "env": {
     "MONGODB_ADMIN_PASS": "@mongodb-admin-pass",
     "API_KEY": "@api-key"

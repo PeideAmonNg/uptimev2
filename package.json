@@ -16,6 +16,9 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
-    "sirv-cli": "^1.0.0"
+    "mongoose": "^5.11.14",
+    "mongoose-auto-increment": "^5.0.1",
+    "sirv-cli": "^1.0.0",
+    "svelte-routing": "^1.5.0"
   }
 }

@@ -1,7 +1,4 @@
 main {
-  align-content: center;
-  box-sizing: border-box;
-  display: grid;
   font-family: 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica',
     'Arial', sans-serif;
   hyphens: auto;
@@ -22,14 +19,16 @@ p {
   font-size: 16px;
 }
 a {
-  border-bottom: 1px solid white;
-  color: #0076ff;
+  /* border-bottom: 1px solid white; */
+  color: white;
   cursor: pointer;
   text-decoration: none;
   transition: all 0.2s ease;
+  border: 1px solid lightgray;
 }
 a:hover {
-  border-bottom: 1px solid #0076ff;
+  /* border-bottom: 1px solid #0076ff; */
+  color: gray;
 }
 code,
 pre {
@@ -41,4 +40,10 @@ pre {
 code:before,
 code:after {
   content: '\`';
+}
+#users {
+  text-align: left;
+}
+li {
+  list-style-type: none;
 }

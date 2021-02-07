@@ -1,0 +1,12 @@
+{
+  "name": "uptime",
+  "version": 14,
+  "env": {
+    "MONGODB_ADMIN_PASS": "@mongodb-admin-pass",
+    "API_KEY": "@api-key"
+  },
+  "rewrites": [
+    { "source": "/api/users/:id", "destination": "/api/users" },
+    { "source": "/api/users/:id/", "destination": "/api/users" }
+  ]
+}

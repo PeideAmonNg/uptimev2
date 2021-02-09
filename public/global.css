@@ -1,13 +1,14 @@
 main {
-  font-family: 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica',
-    'Arial', sans-serif;
+  /* font-family: 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica',
+    'Arial', sans-serif; */
+  font-family: 'Courier New', monospace;
   hyphens: auto;
   line-height: 1.65;
   margin: 0 auto;
   max-width: 680px;
   min-height: 100vh;
-  padding: 72px 0;
-  text-align: center;
+  /* padding: 72px 0; */
+  /* text-align: center;   */
 }
 h1 {
   font-size: 45px;
@@ -16,7 +17,7 @@ h2 {
   margin-top: 1.5em;
 }
 p {
-  font-size: 16px;
+  font-size: 12px;
 }
 a {
   /* border-bottom: 1px solid white; */
@@ -46,4 +47,18 @@ code:after {
 }
 li {
   list-style-type: none;
+}
+.online {
+  color: white;
+  background-color: green;
+  border-radius: 5px;
+  padding: 2px;
+}
+.date {
+  margin-right: 20px; 
+}
+
+.loading-component {
+  display: flex;
+  align-items: center;
 }

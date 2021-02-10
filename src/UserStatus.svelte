@@ -22,7 +22,22 @@
 
   function formatDate(date) {
     let d = new Date(date);
-    return `${d.getDate()}/${d.getMonth() + 1} ${d.getHours()}:${d.getMinutes()}`;
+    return `${d.getHours()}:${d.getMinutes()}`;
+  }
+
+  let previousDayMonth = '-1/-1'; // initialise to bogus value
+  function sameDayMonthAsPrevious(date) {
+    let d = new Date(date);
+    let dayMonth = `${d.getDate()}/${d.getMonth() + 1}`;
+    let isSameDayMonth = dayMonth == previousDayMonth;
+    previousDayMonth = dayMonth;
+    return isSameDayMonth;
+  }
+
+  function getDayMonth(date) {
+    let d = new Date(date);
+    let dayMonth = `${d.getDate()}/${d.getMonth() + 1}`;
+    return dayMonth;  
   }
 </script>
 
@@ -39,6 +54,9 @@
   {/if}
   <table>
   {#each userStatuses as us}
+    {#if !sameDayMonthAsPrevious(us.createdAt)}
+      <tr><td class="daymonth">{getDayMonth(us.createdAt)}</td></tr>
+    {/if}
     <tr>
       <td class="date">{formatDate(us.createdAt)}</td><td>{us.username}</td><td><span class="{us.status}">{us.status}</span></td>
     </tr>

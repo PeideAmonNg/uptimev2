@@ -40,7 +40,7 @@
   <table>
   {#each userStatuses as us}
     <tr>
-      <td class="date">{formatDate(us.createdAt)}</td><td>{us.status}</td><td><span class="{us.status}">{us.status}</span></td>
+      <td class="date">{formatDate(us.createdAt)}</td><td>{us.username}</td><td><span class="{us.status}">{us.status}</span></td>
     </tr>
   {/each}
   </table>

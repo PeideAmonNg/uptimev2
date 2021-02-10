@@ -3,13 +3,27 @@
   export let isFetchingUserStatuses = true;
   let userStatuses = [];
   onMount(async () => {
-    const res = await fetch("/api/user-status");
+    let apiKey;
+    while(!apiKey) {
+      apiKey = prompt("Please enter your api key");
+    } 
+    try {
+      const res = await fetch(`/api/user-status-last-online?api_key=${apiKey}`);
+      if(res.status == 200) { 
+        userStatuses = [...await res.json()];
+      }
+      isFetchingUserStatuses = false;
+    } catch(e) {
+      console.log('caught error', e)
+    }
+
     
-    userStatuses = [...await res.json()];
-    console.log(userStatuses);
-    isFetchingUserStatuses = false;
   });
 
+  function formatDate(date) {
+    let d = new Date(date);
+    return `${d.getDate()}/${d.getMonth() + 1} ${d.getHours()}:${d.getMinutes()}`;
+  }
 </script>
 
 <style>
@@ -17,15 +31,17 @@
 </style>
 
 <main>
-  <h1>User status</h1>
+  <h1>uptime</h1>
   {#if isFetchingUserStatuses}
     <div class="loading-component">
-      <img src="dual-ring.gif" alt="Loading.." width="20" height="20"><span>Fetching user status</span>
+      <img src="dual-ring.gif" alt="Loading.." width="20" height="20"><span>Fetching..</span>
     </div>
   {/if}
+  <table>
   {#each userStatuses as us}
-    <p>
-    <span class="date">{new Date(us.createdAt).toLocaleString()}</span> {us.username} <span class="{us.status}">{us.status}</span>
-    </p>
+    <tr>
+      <td class="date">{formatDate(us.createdAt)}</td><td>{us.status}</td><td><span class="{us.status}">{us.status}</span></td>
+    </tr>
   {/each}
+  </table>
 </main>

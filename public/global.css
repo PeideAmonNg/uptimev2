@@ -54,8 +54,8 @@ li {
   border-radius: 5px;
   padding: 2px;
 }
-.date {
-  margin-right: 20px; 
+.date, td {
+  padding-right: 20px; 
 }
 
 .loading-component {

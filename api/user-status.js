@@ -12,17 +12,6 @@ autoIncrement.initialize(db);
 const User = require('../db/UserModel');
 const UserStatus = require('../db/UserStatusModel');
 
-function getUserStatusToday() {
-  // return User.count().then(count => {
-  //   console.log(count)
-  var todayStart = new Date();
-  todayStart.setHours(0,0,0,0);
-  var now = new Date();
-
-  return UserStatus.find({createdAt: {$gte: todayStart, $lte: now}}, {username: 1, createdAt: 1, status: 1}).sort({createdAt: -1}).lean();
-  // });  
-}
-
 function getUserStatusById(userid, limit = 50) {
   return User.findOne({id: userid}, {username: 1}).then(user => {
     if(!user) {
@@ -39,8 +28,6 @@ module.exports = async (req, res) => {
   let userStasuses = [];
   if(req.query.id) {
     userStasuses = await getUserStatusById(req.query.id);
-  } else {
-    userStasuses = await getUserStatusToday()
   }
 
   res.status(200).send(userStasuses);

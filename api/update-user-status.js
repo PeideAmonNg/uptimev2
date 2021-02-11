@@ -27,7 +27,7 @@ function getUserStatus(user) {
 
 function saveUserStatuses(userStatuses) {
   // write to mongodb
- return UserStatus.insertMany(userStatuses);  
+ return UserStatus.insertMany(userStatuses);
 }
 
 function getDateObject() {
@@ -88,7 +88,7 @@ async function updateUserStatus() {
     try {
       await saveUserStatuses(userStatuses);
     } catch (e) {
-      console.log('Erro saving user statuses', e);
+      console.log('Error saving user statuses', e);
     }
     await logFunctionCall();
     resolve();

@@ -63,6 +63,9 @@ function remove(id) {
 }
 
 module.exports = async (req, res) => {
+  if(req.query.api_key != process.env.API_KEY) {
+    return res.status(403).send();  
+  }
   
   let method = req.method;
   let userid = req.query.id;

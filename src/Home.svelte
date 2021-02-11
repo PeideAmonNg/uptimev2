@@ -1,19 +1,20 @@
 <script>
   import { onMount } from "svelte";
   import { writable } from 'svelte/store';
+  import Auth from './Auth';
 
   export let date;
   let users = [];
   let isFetchingUsers = true;
 
   onMount(async () => {
-    const res = await fetch("/api/date");
-    const newDate = await res.text();
-    date = newDate;
+    let apikey = Auth.getApiKey();
 
-    const res2 = await fetch('/api/users');
-    users = await res2.json();
-    console.log(users);
+    const res = await fetch(`/api/users?api_key=${apikey}`);
+    if(res.status == 200) {
+      users = await res.json();
+      console.log(users);
+    }
     isFetchingUsers = false;
   });
 
@@ -38,27 +39,30 @@
       console.log('successfully created user', savedUser);
       users = [...users, savedUser];
       $user = {};
-    }
+    } 
   }
 
 </script>
 
 <main>
-  <p>{date ? date : 'Loading date...'}</p>
-  <ul id="users">
-    {#each users as user}
-      <li>
-        <a href="/users/{user.id}">
-          {user.username} {user.name ? `(${user.name})` : ''}
-        </a>
-      </li>
-    {/each}
-  </ul>
+  <b>Users</b>
+  <table>
+  {#each users as user}
+    <tr>
+      <td><a href="/users/{user.id}">{user.username}</a></td>
+    </tr>
+  {/each}
+  </table>
   {#if isFetchingUsers}
-    Fetching users
+    <div class="loading-component">
+      <img src="/dual-ring.gif" alt="Loading.." width="20" height="20"><span>Fetching..</span>
+    </div>
   {/if}
   <form on:submit|preventDefault={handleOnSubmit} style="text-align: left;">
-    <h5>New User</h5>
+    <br>
+    <hr>
+    <b>New User</b>
+    <br>
     <input name="username" bind:value={$user.username} placeholder="Enter username"><br>
     <input name="name" bind:value={$user.name} placeholder="Enter name"><br>
     <input type="submit" value="Add">

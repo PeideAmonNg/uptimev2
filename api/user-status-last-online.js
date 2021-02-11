@@ -50,10 +50,19 @@ function getEachUserLastOnline() {
   ])
 }
 
+function getLastUpdatedStatus() {
+  return UserStatus.find().sort({createdAt: -1}).limit(1).lean();
+}
+
 module.exports = async (req, res) => {
   if(req.query.api_key != process.env.API_KEY) {
     return res.status(403).send();
   }
 
-  res.status(200).send(await getEachUserLastOnline());
+  let lastUpdated = await getLastUpdatedStatus();
+  let obj = {
+    lastUpdated: lastUpdated.length > 0 ? lastUpdated[0].createdAt : '',
+    userStatuses: await getEachUserLastOnline()
+  }
+  res.status(200).send(obj);
 };

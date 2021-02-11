@@ -1,16 +1,17 @@
 <script>
   import { onMount } from "svelte";
+  import Auth from './Auth';
   export let isFetchingUserStatuses = true;
   let userStatuses = [];
+  let lastUpdated = '';
   onMount(async () => {
-    let apiKey;
-    while(!apiKey) {
-      apiKey = prompt("Please enter your api key");
-    } 
+    let apiKey = Auth.getApiKey();
     try {
       const res = await fetch(`/api/user-status-last-online?api_key=${apiKey}`);
       if(res.status == 200) { 
-        userStatuses = [...await res.json()];
+        let o = await res.json();
+        userStatuses = o.userStatuses;
+        lastUpdated = o.lastUpdated;
       }
       isFetchingUserStatuses = false;
     } catch(e) {
@@ -40,16 +41,19 @@
     return dayMonth;  
   }
 </script>
-
-<style>
-	strong { color: red; }
-</style>
-
 <main>
-  <h1>uptime</h1>
+  <b>Last Online</b>
+  <table>
+    <tr><td>Time now:</td><td>{new Date().toLocaleString('en-NZ')}</td></tr>
+    {#if lastUpdated}
+    <tr>
+      <td>Last Updated:</td><td>{new Date(lastUpdated).toLocaleString('en-NZ')}</td>
+    </tr>
+    {/if}
+  </table>
   {#if isFetchingUserStatuses}
     <div class="loading-component">
-      <img src="dual-ring.gif" alt="Loading.." width="20" height="20"><span>Fetching..</span>
+      <img src="/dual-ring.gif" alt="Loading.." width="20" height="20"><span>Fetching..</span>
     </div>
   {/if}
   <table>
@@ -58,7 +62,7 @@
       <tr><td class="daymonth">{getDayMonth(us.createdAt)}</td></tr>
     {/if}
     <tr>
-      <td class="date">{formatDate(us.createdAt)}</td><td>{us.username}</td><td><span class="{us.status}">{us.status}</span></td>
+      <td class="time">{formatDate(us.createdAt)}</td><td>{us.username}</td><td><span class="{us.status}">{us.status}</span></td>
     </tr>
   {/each}
   </table>

@@ -7,6 +7,7 @@ main {
   margin: 0 auto;
   max-width: 680px;
   min-height: 100vh;
+  font-size: 12px;
   /* padding: 72px 0; */
   /* text-align: center;   */
 }
@@ -15,9 +16,6 @@ h1 {
 }
 h2 {
   margin-top: 1.5em;
-}
-p {
-  font-size: 12px;
 }
 a {
   /* border-bottom: 1px solid white; */
@@ -52,7 +50,8 @@ li {
   color: white;
   background-color: green;
   border-radius: 5px;
-  padding: 2px;
+  padding: 0 2px;
+  text-align: center;
 }
 .loading-component {
   display: flex;
@@ -60,4 +59,7 @@ li {
 }
 .daymonth {
   padding-top: 20px;
+}
+.time {
+  padding-left: 10px;
 }

@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import Auth from './Auth';
   export let id;
+  let name = '';
   let userStatuses = [];
   let isFetchingUser = false;
 
@@ -10,8 +11,10 @@
     let apiKey = Auth.getApiKey();
     console.log('apikey', apiKey)
     isFetchingUser = true;
-    const res2 = await fetch(`/api/user-status/${id}?api_key=${apiKey}`);
-    userStatuses = await res2.json();
+    const res = await fetch(`/api/user-status/${id}?api_key=${apiKey}`);
+    let o = await res.json();
+    userStatuses = o.userStatuses;
+    name = o.name;
     isFetchingUser = false;
     console.log(userStatuses);
   });
@@ -43,7 +46,8 @@
       <img src="/dual-ring.gif" alt="Loading.." width="20" height="20"><span>Fetching..</span>
     </div>
   {/if}
-  {userStatuses.length > 0 ? userStatuses[0].username : ''}
+  <b>{userStatuses.length > 0 ? userStatuses[0].username : ''}</b>
+  <p>{name}</p>
   <table>
   {#each userStatuses as us}
     {#if !sameDayMonthAsPrevious(us.createdAt)}

@@ -6,6 +6,9 @@
   import Auth from './Auth';
   Auth.getApiKey();
 </script>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+</head>
 <main>
   <Router url="">
     <nav>

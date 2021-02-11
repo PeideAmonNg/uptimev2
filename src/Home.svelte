@@ -3,12 +3,12 @@
   import { writable } from 'svelte/store';
   import Auth from './Auth';
 
-  export let date;
   let users = [];
   let isFetchingUsers = true;
+  let apikey = '';
 
   onMount(async () => {
-    let apikey = Auth.getApiKey();
+     apikey = Auth.getApiKey();
 
     const res = await fetch(`/api/users?api_key=${apikey}`);
     if(res.status == 200) {
@@ -23,7 +23,7 @@
 
   async function handleOnSubmit() {
     console.log("Adding user", $user);
-    const res = await fetch('/api/users', {
+    const res = await fetch(`/api/users?api_key=${apikey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

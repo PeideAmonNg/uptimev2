@@ -42,7 +42,7 @@
   function isOnline(lastOnlineDate) {
     let cronJobInterval = 5; // 5 minute interval
     let delay = 2; // delay from when crob job is actually called plus processing time
-    if(Math.abs(new Date(lastOnlineDate).getMinutes() - new Date().getMinutes()) <= (cronJobInterval + delay))  {
+    if(Math.abs(new Date(lastOnlineDate).getTime() - new Date().getTime()) <= ((cronJobInterval + delay) * 60 * 1000))  {
       return true;
     } else {
       return false;

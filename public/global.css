@@ -17,14 +17,6 @@ h1 {
 h2 {
   margin-top: 1.5em;
 }
-a {
-  /* border-bottom: 1px solid white; */
-  color: white;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  border: 1px solid lightgray;
-}
 a:hover {
   /* border-bottom: 1px solid #0076ff; */
   color: gray;

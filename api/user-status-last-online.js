@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-auto-increment');
 
 const password = process.env.MONGODB_ADMIN_PASS;
-
 mongoose.connect(`mongodb+srv://admin:${password}@cluster0.krz1f.mongodb.net/uptime?retryWrites=true&w=majority`, 
                   {useNewUrlParser: true, useUnifiedTopology: true});
 
@@ -31,13 +30,15 @@ function getEachUserLastOnline() {
       $group: { 
         _id: '$username',
         createdAt: { $last: '$createdAt' },
-        status: { $last: '$status' }
+        status: { $last: '$status' },
+        userid: { $last: '$userid' }
       }
     },
     {
       $project: {        
         _id: 0,
         username: '$_id',
+        userid: 1,
         createdAt: 1,
         status: 1
       }

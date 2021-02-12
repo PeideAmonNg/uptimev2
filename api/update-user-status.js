@@ -13,7 +13,7 @@ const UserStatus = require('../db/UserStatusModel');
 const FunctionCallLog = require('../db/FunctionCallLog');
 
 function getUserStatus(user) {
-  console.log('Getting status for user', user.name);
+  console.log('Getting status for user', user.id);
   return new Promise((resolve, rej) => {
     let isUserOnlineLink = `https://manifest-server.naiadsystems.com/live/s:${user.username}.json?last=load&format=mp4-hls`;
     https.get(isUserOnlineLink, res => {
@@ -46,6 +46,7 @@ function getDateObject() {
 
 function genUserStatusEntry(user, userStatus) {
   return {
+    userid: user.id,
     username: user.username,
     created_at: getDateObject(),
     status: userStatus
@@ -84,7 +85,6 @@ async function updateUserStatus() {
         console.log('Error getting status for user id ' + user.id, e);
       }
     }
-    
     try {
       await saveUserStatuses(userStatuses);
     } catch (e) {

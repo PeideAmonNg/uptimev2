@@ -62,7 +62,7 @@
       <tr><td class="daymonth">{getDayMonth(us.createdAt)}</td></tr>
     {/if}
     <tr>
-      <td class="time">{formatDate(us.createdAt)}</td><td>{us.username}</td><td><span class="{us.status}">{us.status}</span></td>
+      <td class="time">{formatDate(us.createdAt)}</td><td><a href="/users/{us.userid}">{us.username}</a></td><td><span class="{us.status}">{us.status}</span></td>
     </tr>
   {/each}
   </table>

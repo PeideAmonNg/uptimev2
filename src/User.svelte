@@ -21,7 +21,7 @@
 
   function formatDate(date) {
     let d = new Date(date);
-    return `${d.getHours()}:${d.getMinutes()}`;
+    return `${('0' + d.getHours()).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}`;
   }
 
   let previousDayMonth = '-1/-1'; // initialise to bogus value

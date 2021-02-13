@@ -47,7 +47,9 @@
     </div>
   {/if}
   <b>{userStatuses.length > 0 ? userStatuses[0].username : ''}</b>
-  <p>{name}</p>
+  {#if name }
+    <p>{name}</p>
+  {/if}
   <table>
   {#each userStatuses as us}
     {#if !sameDayMonthAsPrevious(us.createdAt)}

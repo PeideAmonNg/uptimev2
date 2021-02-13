@@ -45,6 +45,15 @@
 </script>
 
 <main>
+  <form on:submit|preventDefault={handleOnSubmit} style="text-align: left;">
+    <b>New User</b>
+    <br>
+    <input name="username" bind:value={$user.username} placeholder="Enter username"><br>
+    <input name="name" bind:value={$user.name} placeholder="Enter name"><br>
+    <input type="submit" value="Add">
+  </form>
+  <br>
+  <hr>
   <b>Users</b>
   <table>
   {#each users as user}
@@ -58,14 +67,4 @@
       <img src="/dual-ring.gif" alt="Loading.." width="20" height="20"><span>Fetching..</span>
     </div>
   {/if}
-  <form on:submit|preventDefault={handleOnSubmit} style="text-align: left;">
-    <br>
-    <hr>
-    <b>New User</b>
-    <br>
-    <input name="username" bind:value={$user.username} placeholder="Enter username"><br>
-    <input name="name" bind:value={$user.name} placeholder="Enter name"><br>
-    <input type="submit" value="Add">
-  </form>
-
 </main>

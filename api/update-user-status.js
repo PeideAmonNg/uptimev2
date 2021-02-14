@@ -18,9 +18,11 @@ function getUserStatus(user) {
     let isUserOnlineLink = `https://manifest-server.naiadsystems.com/live/s:${user.username}.json?last=load&format=mp4-hls`;
     https.get(isUserOnlineLink, res => {
       let userStatus = res.statusCode == 200 ? 'online' : 'offline';
-      console.log('Getting user status', userStatus);
+      console.log(`User ${user.id} status: `, userStatus);
       resolve(userStatus);
-    });
+    }).on('error', (e) => {
+      console.error(`Error getting status for user ${user.id}`, e);
+    });;
   });
   
 }

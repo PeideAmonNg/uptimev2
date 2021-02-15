@@ -13,15 +13,13 @@ const UserStatus = require('../db/UserStatusModel');
 const FunctionCallLog = require('../db/FunctionCallLog');
 
 function getUserStatus(user) {
-  console.log('Getting status for user', user.id);
   return new Promise((resolve, rej) => {
     let isUserOnlineLink = `https://manifest-server.naiadsystems.com/live/s:${user.username}.json?last=load&format=mp4-hls`;
     https.get(isUserOnlineLink, res => {
       let userStatus = res.statusCode == 200 ? 'online' : 'offline';
-      console.log(`User ${user.id} status: `, userStatus);
-      resolve(userStatus);
+      resolve(genUserStatusEntry(user, userStatus));
     }).on('error', (e) => {
-      console.error(`Error getting status for user ${user.id}`, e);
+      console.error(`Failed to get user status from naiadsystems for user ${user.id}`, e);
     });;
   });
   
@@ -35,7 +33,6 @@ function saveUserStatuses(userStatuses) {
 function getDateObject() {
   let date = new Date();
   let nzdate = new Date(date.toLocaleString('en-US', { timeZone: 'Pacific/Auckland' }));
-  console.log(nzdate.toString());
   return {
     utc_datetime: date,
     nz_datetime: nzdate.toString(),
@@ -61,19 +58,18 @@ function logFunctionCall() {
 }
 
 async function updateUserStatus() {
-  console.log('In updateUserStatus');
   return new Promise(async resolve => {
+  
+    let startTime = new Date().getTime();
 
     let users = [];
     try{
-      console.log('Fetching users');
       users = await User.find({}).lean();
-      console.log('Fecthed users');
     } catch (e) {
-      console.log('Error', e);
+      console.error('Failed to get users from DB', e);
     }
     
-    let userStatuses = [];
+    let userStatusPromises = [];
     
     // Get user requests
     for (let key in users) {
@@ -81,18 +77,26 @@ async function updateUserStatus() {
       let user = users[key];
 
       try {
-        let userStatus = await getUserStatus(user);
-        userStatuses.push(genUserStatusEntry(user, userStatus));
+        userStatusPromises.push(getUserStatus(user));
       } catch (e) {
-        console.log('Error getting status for user id ' + user.id, e);
+        console.error('Error while getting status for user id ' + user.id, e);
       }
     }
+
+    let userStatuses = await Promise.all(userStatusPromises) || [];
+
     try {
       await saveUserStatuses(userStatuses);
     } catch (e) {
-      console.log('Error saving user statuses', e);
+      console.error('Error saving user statuses', e);
     }
+
     await logFunctionCall();
+
+    let elapsed = (new Date().getTime() - startTime) / 1000;
+
+    console.error(`Updating user status took ${Math.round(elapsed)} seconds`)
+
     resolve();
   });
   

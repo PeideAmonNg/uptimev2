@@ -13,6 +13,7 @@
     const res = await fetch(`/api/users?api_key=${apikey}`);
     if(res.status == 200) {
       users = await res.json();
+      users.reverse();
       console.log(users);
     }
     isFetchingUsers = false;
@@ -37,7 +38,7 @@
     if(res && res.status == 201) {
       const savedUser = await res.json()
       console.log('successfully created user', savedUser);
-      users = [...users, savedUser];
+      users = [savedUser, ...users];
       $user = {};
     } 
   }
@@ -54,7 +55,7 @@
   </form>
   <br>
   <hr>
-  <b>Users</b>
+  <b>Users ({users.length})</b>
   <table>
   {#each users as user}
     <tr>

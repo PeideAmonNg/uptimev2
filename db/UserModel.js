@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   username: String,
   name: String,
   url: String
-});
+}, {timestamps: false, strict: false});
 userSchema.plugin(autoIncrement.plugin, {model:"User", field: "id"});
 
 

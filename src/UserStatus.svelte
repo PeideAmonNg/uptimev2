@@ -53,11 +53,9 @@
   <b>Last Online</b>
   <table>
     <tr><td>Time now:</td><td>{new Date().toLocaleString('en-NZ')}</td></tr>
-    {#if lastUpdated}
     <tr>
-      <td>Last Updated:</td><td>{new Date(lastUpdated).toLocaleString('en-NZ')}</td>
+      <td>Last Updated:</td><td>{!lastUpdated ? '' : new Date(lastUpdated).toLocaleString('en-NZ')}</td>
     </tr>
-    {/if}
   </table>
   {#if isFetchingUserStatuses}
     <div class="loading-component">
@@ -72,7 +70,7 @@
     <tr>
       <td class="time">{formatDate(us.createdAt)}</td><td><a href="/users/{us.userid}">{us.username}</a></td>
       {#if isOnline(us.createdAt)}
-        <td><span class="online">online</span></td>
+        <td><span class="online"></span></td>
       {/if}
     </tr>
   {/each}

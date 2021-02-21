@@ -39,11 +39,21 @@ li {
   list-style-type: none;
 }
 .online {
-  color: white;
+  /* color: white;
   background-color: green;
-  border-radius: 5px;
-  padding: 0 2px;
-  text-align: center;
+  border: thin solid green;
+  padding: 1px;
+  border-radius: 3px; */
+}
+.online:before {
+  content: ' \25CF';
+  font-size: 1em;
+  color: #05B113;
+}
+.offline {
+  color: white;
+  border: thin solid lightgray;
+  /* border-radius: 2px; */
 }
 .loading-component {
   display: flex;

@@ -20,7 +20,7 @@ function getUserStatusById(userid, limit = 50) {
 
     let periodInDays = 7; // fetch user statuses within this period (in days)
 
-    let startDate = new Date((new Date()).toLocaleDateString('en-US', {timeZone: 'NZ'}));
+    let startDate = new Date((new Date()).toLocaleDateString('en-US', {timeZone: 'Pacific/Auckland'}));
     startDate.setDate(startDate.getDate() - periodInDays);
     startDate.setHours(0,0,0,0);
 
@@ -80,7 +80,7 @@ function getDays(statuses) {
 
   for (let s of statuses) {
 
-    let date = new Date((new Date(s.createdAt)).toLocaleString('en-US', { timeZone: 'NZ' }));
+    let date = new Date((new Date(s.createdAt)).toLocaleString('en-US', { timeZone: 'Pacific/Auckland' }));
     let dayMonthYear = getDayMonthYear(date);
 
     if (!(dayMonthYear in days)) {

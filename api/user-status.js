@@ -17,13 +17,16 @@ function getUserStatusById(userid, limit = 50) {
     if(!user) {
       return Promise.resolve([]);
     }
-    let yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() -1);
-    yesterday.setHours(0,0,0,0);
+
+    let periodInDays = 7; // fetch user statuses within this period (in days)
+
+    let startDate = new Date((new Date()).toLocaleDateString('en-US', {timeZone: 'NZ'}));
+    startDate.setDate(startDate.getDate() - periodInDays);
+    startDate.setHours(0,0,0,0);
 
     return Promise.all([
       user,
-      UserStatus.find({username: user.username, createdAt: {$gte: yesterday}}, {createdAt: 1, status: 1, _id: 0}).sort({createdAt: -1}).lean()
+      UserStatus.find({username: user.username, createdAt: {$gte: startDate}}, {createdAt: 1, status: 1, _id: 0}).sort({createdAt: -1}).lean()
     ]).then(values => {
 
       let statuses = values[1];
@@ -74,23 +77,11 @@ function getDays(statuses) {
   // 			}
   
   let days = {};
-  
-  // Get all statuses the past day
-  let now = new Date();    
-  let yesterday = new Date(now);
-  yesterday.setDate(yesterday.getDate() - 1);
-  yesterday.setHours(0,0,0,0);
 
-  let pastDay = new Date();
-  for (let i = 0; i < 24; i++) {
-
-    pastDay.setDate(pastDay.getDate() - 1);
-  }
-  
   for (let s of statuses) {
 
-    let date = new Date(s.createdAt);
-    let dayMonthYear = getDayMonthYear(s.createdAt);
+    let date = new Date((new Date(s.createdAt)).toLocaleString('en-US', { timeZone: 'NZ' }));
+    let dayMonthYear = getDayMonthYear(date);
 
     if (!(dayMonthYear in days)) {
       days[dayMonthYear] = {};

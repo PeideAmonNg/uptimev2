@@ -84,8 +84,8 @@
       {#each Object.keys(days[day].hours).sort() as hour}
         <td>
           <span 
-            class="tooltip"
-            style="width: 1em; height: 1em; vertical-align: middle; background-color: {getStatusHsl(days[day]['hours'][hour])}"
+            class="status-bar tooltip"
+            style="background-color: {getStatusHsl(days[day]['hours'][hour])}"
             title={Math.round(days[day]['hours'][hour]['online'] / (days[day]['hours'][hour]['online'] + days[day]['hours'][hour]['offline']) * 100) + '% online rate'}
           >
             <span class="tooltiptext">

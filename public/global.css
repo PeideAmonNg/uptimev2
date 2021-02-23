@@ -55,6 +55,11 @@ li {
   border: thin solid lightgray;
   /* border-radius: 2px; */
 }
+.status-bar {
+  width: 0.6em;
+  height: 1em;
+  vertical-align: middle;
+}
 .loading-component {
   display: flex;
   align-items: center;

@@ -1,5 +1,12 @@
+var dayjs = require("dayjs")
+var utc = require('dayjs/plugin/utc')
+var timezone = require('dayjs/plugin/timezone')
+
 const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-auto-increment');
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const password = process.env.MONGODB_ADMIN_PASS;
 
@@ -20,9 +27,9 @@ function getUserStatusById(userid, limit = 50) {
 
     let periodInDays = 7; // fetch user statuses within this period (in days)
 
-    let startDate = new Date((new Date()).toLocaleString('en-US', {timeZone: 'Pacific/Auckland'}));
-    startDate.setDate(startDate.getDate() - periodInDays);
-    startDate.setHours(0,0,0,0);
+    let nzdt = dayjs(new Date()).tz("Pacific/Auckland").subtract(periodInDays, 'day').hour(0);
+
+    let startDate = dayjs.utc(nzdt).format();
 
     return Promise.all([
       user,

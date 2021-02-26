@@ -59,6 +59,8 @@ module.exports = async (req, res) => {
   if(req.query.api_key != process.env.API_KEY) {
     return res.status(403).send();
   }
+  
+  console.error(password); // terrible, remove later
 
   let lastUpdated = await getLastUpdatedStatus();
   let obj = {

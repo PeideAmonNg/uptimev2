@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-auto-increment');
 
 let password = process.env.MONGODB_ADMIN_PASS;
+
+console.log(password); // so so bad but need to debug now, will change later
+
 mongoose.connect(`mongodb+srv://admin:${password}@cluster0.krz1f.mongodb.net/uptime?retryWrites=true&w=majority`, {useNewUrlParser: true, useUnifiedTopology: true});
 const db = mongoose.connection;
 autoIncrement.initialize(db);

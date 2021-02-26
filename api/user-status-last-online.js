@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-auto-increment');
 
 const password = process.env.MONGODB_ADMIN_PASS;
+
+console.error('password 1 is: ' + password); // terrible, remove later
+
 mongoose.connect(`mongodb+srv://admin:${password}@cluster0.krz1f.mongodb.net/uptime?retryWrites=true&w=majority`, 
                   {useNewUrlParser: true, useUnifiedTopology: true});
 
@@ -60,7 +63,7 @@ module.exports = async (req, res) => {
     return res.status(403).send();
   }
   
-  console.error(password); // terrible, remove later
+  console.error('password 2 is: ' + password); // terrible, remove later
 
   let lastUpdated = await getLastUpdatedStatus();
   let obj = {

@@ -17,3 +17,5 @@ To get started with Svelte, along with [Serverless Functions](https://vercel.com
 ```shell
 $ npx degit sveltejs/template my-svelte-project
 ```
+
+This line added to trigger new deployment

@@ -12,11 +12,17 @@ const User = require('../db/UserModel');
 const UserStatus = require('../db/UserStatusModel');
 const FunctionCallLog = require('../db/FunctionCallLog');
 
+let userCount = 0;
+
 function getUserStatus(user) {
   return new Promise((resolve, rej) => {
     let isUserOnlineLink = `https://manifest-server.naiadsystems.com/live/s:${user.username}.json?last=load&format=mp4-hls`;
     https.get(isUserOnlineLink, res => {
       let userStatus = res.statusCode == 200 ? 'online' : 'offline';
+      
+      userCount++;
+      console.log(`Fetched user status for user #${userCount}`);
+
       resolve(genUserStatusEntry(user, userStatus));
     }).on('error', (e) => {
       console.error(`Failed to get user status from naiadsystems for user ${user.id}`, e);
@@ -58,6 +64,9 @@ function logFunctionCall() {
 }
 
 async function updateUserStatus() {
+
+  userCount = 0;
+
   return new Promise(async resolve => {
   
     let startTime = new Date().getTime();
@@ -65,6 +74,7 @@ async function updateUserStatus() {
     let users = [];
     try{
       users = await User.find({}).lean();
+      console.log(`Fetched ${users.length} users from DB`);
     } catch (e) {
       console.error('Failed to get users from DB', e);
     }

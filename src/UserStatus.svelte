@@ -7,7 +7,7 @@
   onMount(async () => {
     let apiKey = Auth.getApiKey();
     try {
-      const res = await fetch(`/api/user-status-last-online?api_key=${apiKey}`);
+      const res = await fetch(`https://ffscgzwcd4.execute-api.ap-southeast-2.amazonaws.com/prod/users-last-online?api_key=${apiKey}`);
       if(res.status == 200) { 
         let o = await res.json();
         userStatuses = o.userStatuses;

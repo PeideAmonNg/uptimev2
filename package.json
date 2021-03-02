@@ -16,9 +16,12 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.7.0",
+    "aws-sdk": "^2.854.0",
     "dayjs": "^1.10.4",
     "mongoose": "^5.11.14",
     "mongoose-auto-increment": "^5.0.1",
+    "mongoose-sequence": "^5.3.1",
     "sirv-cli": "^1.0.0",
     "svelte-routing": "^1.5.0"
   }

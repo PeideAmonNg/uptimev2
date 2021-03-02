@@ -6,3 +6,5 @@
 .env.build
 
 .vercel
+
+lambda/**/node_modules/

@@ -4,7 +4,6 @@
   export let id;
   let name = '';
   let username = '';
-  let userStatuses = [];
   let isFetchingUser = false;
   let days = {};
 
@@ -14,39 +13,17 @@
     console.log('apikey', apiKey)
     isFetchingUser = true;
     try {
-      const res = await fetch(`/api/user-status/${id}?api_key=${apiKey}`);
+      const res = await fetch(`https://ffscgzwcd4.execute-api.ap-southeast-2.amazonaws.com/prod/users?id=${id}&api_key=${apiKey}`);
       let o = await res.json();
-      userStatuses = o.userStatuses;
       name = o.name;
       username = o.username;
-      days = o.userStatuses;
+      days = o.statuses;
       console.log(o)
     } catch (e) {
       console.log('Failed to fetch user status', e);
     }
     isFetchingUser = false;
   });
-
-
-  function getHourMinute(date) {
-    let d = new Date(date);
-    return `${('0' + d.getHours()).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}`;
-  }
-
-  let previousDayMonth = '-1/-1'; // initialise to bogus value
-  function sameDayMonthAsPrevious(date) {
-    let d = new Date(date);
-    let dayMonth = `${d.getDate()}/${d.getMonth() + 1}`;
-    let isSameDayMonth = dayMonth == previousDayMonth;
-    previousDayMonth = dayMonth;
-    return isSameDayMonth;
-  }
-
-  function getDayMonth(date) {
-    let d = new Date(date);
-    let dayMonth = `${d.getDate()}/${d.getMonth() + 1}`;
-    return dayMonth;  
-  }
 
   function getStatusHsl(hour) {
     let on = hour.online;

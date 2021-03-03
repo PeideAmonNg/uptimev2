@@ -1,0 +1,9 @@
+{
+  "name": "lambda-update-user-status",
+  "private": true,
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.7.0",
+    "@aws-sdk/util-dynamodb": "^3.7.0",
+    "dayjs": "^1.10.4"
+  }
+}

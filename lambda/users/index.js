@@ -1,48 +1,60 @@
+const { DynamoDBClient, QueryCommand, ScanCommand } = require("@aws-sdk/client-dynamodb");
+const { unmarshall } = require("@aws-sdk/util-dynamodb");
+const client = new DynamoDBClient({ region: "ap-southeast-2" });
+
 var dayjs = require("dayjs")
 var utc = require('dayjs/plugin/utc')
 var timezone = require('dayjs/plugin/timezone')
 
-const mongoose = require('mongoose');
-
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-let password = process.env.MONGODB_ADMIN_PASS;
-
-mongoose.connect(`mongodb+srv://admin:${password}@cluster0.krz1f.mongodb.net/uptime?retryWrites=true&w=majority`, {useNewUrlParser: true, useUnifiedTopology: true})
-  .catch(error => console.log(error));
-
-mongoose.connection.on('error', err => {
-  console.log('err', err);
-});
-
-const User = require('./UserModel');
-const UserStatus = require('./UserStatusModel');
-
 function index() {
-  return User.find({}).lean();
+  var params = {
+    TableName: "user",
+    ProjectionExpression: "id, username"
+  };
+
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await client.send(new ScanCommand(params));
+      resolve(data.Items.map(i => unmarshall(i)));
+    } catch (error) {
+      console.error('Error with index() user scan command', error);
+      reject();
+    }
+  })
 }
 
-function getUserById(userid) {
-  return new Promise(async resolve => {
-    let user = await User.findOne({id: userid}).lean();
-    resolve(user);
-    return;
-  });
-}
-
-function getUserStatusByUsername(username, limit = 50) {
-
-  return new Promise(async resolve => {
+function getUserStatusByUsername(username) {
+  return new Promise(async (resolve, reject) => {
     let periodInDays = 7; // fetch user statuses within this period (in days)
 
     let nzdt = dayjs(new Date()).tz("Pacific/Auckland").subtract(periodInDays, 'day').hour(0);
     let startDate = dayjs.utc(nzdt).format();
 
-    let statuses = await UserStatus.find({username: username, createdAt: {$gte: startDate}}, {createdAt: 1, status: 1, _id: 0}).sort({createdAt: -1}).lean();
+    var params = {
+      TableName: "userstatus",
+      ProjectionExpression: "createdat, #S",
+      ExpressionAttributeValues: {
+        ':username': {'S': username},
+        ':createdat': {'S': startDate},
+       },
+      ExpressionAttributeNames: {
+        "#S": 'status'
+      },
+     KeyConditionExpression: 'username = :username and createdat > :createdat'
+    };
 
-    resolve(getDays(statuses));
-    return;
+    try {
+      const data = await client.send(new QueryCommand(params));
+      let items = data.Items.map(i => unmarshall(i));
+      let statuses = getDays(items);
+      resolve(statuses);
+    } catch (error) {
+      console.error('Error with getUserStatusByUsername query command', error);
+      reject(error);
+    }
   });
 }
 
@@ -82,14 +94,13 @@ function getDays(statuses) {
   // 				},
   // 				...
   // 			}
-  console.log('In getDays()');
 
   let days = {};
 
   try {
     for (let s of statuses) {
 
-      let date = new Date((new Date(s.createdAt)).toLocaleString('en-US', { timeZone: 'Pacific/Auckland' }));
+      let date = new Date((new Date(s.createdat)).toLocaleString('en-US', { timeZone: 'Pacific/Auckland' }));
       let dayMonthYear = getDayMonthYear(date);
 
       if (!(dayMonthYear in days)) {
@@ -115,26 +126,45 @@ function getDays(statuses) {
       day.hours[hourMinute][s.status] = (day.hours[hourMinute][s.status] || 0) + 1
     }
   } catch (e) {
-    console.error('e', e);
+    console.error('Error with getDays()', e);
   }
-
-  console.log('Returning days');
 
   return days;
 }
 
-async function get(id) {
+function getUsernameById(id) {
+  var params = {
+    TableName: "user",
+    ProjectionExpression: "username",
+    ExpressionAttributeValues: {
+      ':id': {N: String(id)},
+    },
+    KeyConditionExpression: 'id = :id',
+  };
+
+  return new Promise(async (resolve, reject) => {
+    try {
+      let data = await client.send(new QueryCommand(params));
+      resolve(unmarshall(data.Items[0]).username);
+    } catch (error) {
+      console.error('Error with getUsernameById query command', error);
+      reject(error);
+    }
+  });
+}
+
+async function getUserById(userid) {
   try {
-    let user = await User.findOne({id: id}).lean();
-    let userStatuses = await getUserStatusByUsername(user.username);
+    let username = await getUsernameById(userid);
+    let userStatuses = await getUserStatusByUsername(username);
     
     return {
-      name: user.name,
-      username: user.username,
+      name: '<placeholder name>',
+      username: username,
       userStatuses: userStatuses
     };
   } catch (e) {
-    console.log(e);
+    console.error("Error getting user by id", e);
     return {};
   }
 }
@@ -143,12 +173,7 @@ function create(event) {
 
   let reqBody = JSON.parse(event.body);
 
-  console.log("Creating user with reqBody: ", reqBody, reqBody.name, reqBody.url);
-
-  // db.on('error', console.error.bind(console, 'connection error:'));
-  // db.once('open', function() {
-  //   console.log('connection opened');
-    
+  console.log("Creating user with req.body: ", reqBody);
   
   return new Promise(res => {
     let user = new User({
@@ -184,17 +209,15 @@ exports.handler = async (event, context) => {
   let method = event.httpMethod;
   let userid = event.queryStringParameters.id;
 
-  console.log('httpMethod: ' + method);
-
   if (method == 'GET') {
 
     try {
 
-      console.log('Getting user/s');
+      console.log('Fetching user/s');
 
-      let users = userid ? await get(userid) : await index();
+      let users = userid ? await getUserById(userid) : await index();
 
-      console.log("Fetched users: ", users);
+      console.log("Fetched user/s: ", users);
 
       return {
         statusCode: 200,
@@ -206,7 +229,7 @@ exports.handler = async (event, context) => {
 
     } catch (err) {
 
-      console.log('err', err);
+      console.error('Error with GET request', err);
 
       return {
         statusCode: 500
@@ -229,6 +252,8 @@ exports.handler = async (event, context) => {
 
     } catch (err) {
 
+      console.error('Error with POST request', err);
+
       return {
         statusCode: 500
       };
@@ -249,6 +274,8 @@ exports.handler = async (event, context) => {
       };
 
     } catch (err) {
+
+      console.error('Error with DELETE request', err);
 
       return {
         statusCode: 500

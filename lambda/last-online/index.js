@@ -13,7 +13,7 @@ const client = new DynamoDBClient({ region: "ap-southeast-2" });
 async function getUsersLastOnline() {
   var params = {
     TableName: "lastonline",
-    ProjectionExpression: "id, username, createdat"
+    ProjectionExpression: "userid, username, createdat"
   };
 
   return new Promise(async (resolve, reject) => {

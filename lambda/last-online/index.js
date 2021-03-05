@@ -19,7 +19,13 @@ async function getUsersLastOnline() {
   return new Promise(async (resolve, reject) => {
     try {
       const data = await client.send(new ScanCommand(params));
-      resolve(data.Items.map(i => unmarshall(i)).sort((a, b) => a.createdat > b.createdat ? -1 : 1));
+      let users = data.Items.map(i => unmarshall(i));
+      users = users.map(u => {
+        u.createdat = new Date(u.createdat);
+        return u;
+      });
+      users = users.sort((a, b) => a.createdat > b.createdat ? -1 : 1);
+      resolve(users);
     } catch (error) {
       console.log('Error with scan command', error);
       reject();
@@ -49,3 +55,5 @@ exports.handler = async function handler(event, context) {
 
   return res;
 };
+
+getUsersLastOnline()
